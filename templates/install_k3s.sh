@@ -5,19 +5,44 @@ CLUSTER_CIDR='${pod_cidr}'
 SERVICE_CIDR='${service_cidr}'
 K3S_VER='${k3s_version}'
 HELM_VER='${helm_version}'
-HOSTNAME='${hostname}'
+CLUSTER_NAME='${cluster_name}'
+MASTER_NODE_IP='${master_node_ip}'
+WORKER_NODE_IP='${worker_node_ip}'
+SSH_PRIVATE_KEY='${ssh_private_key}'
+
+echo "write Private Key to file"
+cat <<EOF >/root/.ssh/id_rsa
+$SSH_PRIVATE_KEY
+EOF
+chmod 0400 /root/.ssh/id_rsa
+
+echo "Set SSH config to not do StrictHostKeyChecking"
+cat <<EOF >/root/.ssh/config
+Host *
+    StrictHostKeyChecking no
+EOF
+chmod 0400 /root/.ssh/config
 
 echo "Install k3s without Traefik"
-curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION=$K3S_VER INSTALL_K3S_EXEC="server --no-deploy traefik --cluster-cidr $CLUSTER_CIDR --service-cidr $SERVICE_CIDR --cluster-domain $HOSTNAME.local" sh
+curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION=$K3S_VER INSTALL_K3S_EXEC="server --no-deploy traefik --cluster-cidr $CLUSTER_CIDR --service-cidr $SERVICE_CIDR --cluster-domain $CLUSTER_NAME.local" sh -
+
+echo "Wait for k3s token to exist"
+until [ -f /var/lib/rancher/k3s/server/node-token ]; do sleep 1; done
+echo "Wait until the kubeconfig is generated"
+until [ -f /etc/rancher/k3s/k3s.yaml ]; do sleep 1; done
+
+echo "Gather token and install k3s on worker node via SSH"
+TOKEN=`cat /var/lib/rancher/k3s/server/node-token`
+URL="https://$MASTER_NODE_IP:6443"
+ssh root@$WORKER_NODE_IP <<-SSH
+    curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION=$k3s_ver K3S_URL=$URL K3S_TOKEN=$TOKEN sh -
+SSH
 
 echo "Install helm"
 curl -LO https://get.helm.sh/helm-$HELM_VER-linux-amd64.tar.gz
 tar -xf helm-$HELM_VER-linux-amd64.tar.gz 
 mv linux-amd64/helm /usr/local/bin/
 rm -rf linux-amd64 helm-$HELM_VER-linux-amd64.tar.gz
-
-echo "Wait until the kubeconfig is generated"
-while [ ! -f /etc/rancher/k3s/k3s.yaml ]; do sleep 1; done
 
 echo "Copy the kube config to the 'Known' location for things like helm"
 mkdir -p ~/.kube

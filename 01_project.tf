@@ -3,10 +3,10 @@ provider "packet" {
 }
 
 resource "random_string" "bgp_password" {
-  length = 18
-  min_lower = 6
-  min_upper = 6
-  min_numeric = 6
+    length = 18
+    min_lower = 6
+    min_upper = 6
+    min_numeric = 6
 }
 
 resource "packet_project" "new_project" {
@@ -17,4 +17,14 @@ resource "packet_project" "new_project" {
         asn = var.bgp_asn
         md5 = random_string.bgp_password.result
    }
+}
+
+resource "tls_private_key" "ssh_key_pair" {
+    algorithm = "RSA"
+    rsa_bits = 4096
+}
+
+resource "packet_ssh_key" "ssh_pub_key" {
+    name = var.project_name
+    public_key = chomp(tls_private_key.ssh_key_pair.public_key_openssh)
 }
