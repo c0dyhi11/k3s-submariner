@@ -10,6 +10,12 @@ data "template_file" "k3s_install_script" {
         master_node_ip = element(packet_device.k3s_master_nodes.*.access_public_ipv4, count.index)
         worker_node_ip = element(packet_device.k3s_worker_nodes.*.access_public_ipv4, count.index)
         ssh_private_key = chomp(tls_private_key.ssh_key_pair.private_key_pem)
+        global_ip = packet_reserved_ip_block.global_ip.address
+        global_netmask = packet_reserved_ip_block.global_ip.netmask
+        global_cidr = packet_reserved_ip_block.global_ip.cidr
+        bgp_password = random_string.bgp_password.result
+        bgp_asn = var.bgp_asn
+        auth_token = var.auth_token
     }
 }
 

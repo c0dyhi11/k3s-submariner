@@ -66,33 +66,33 @@ variable "server_topology" {
             "min_nodes": 1,
             "max_nodes": 5
         },
-        #{
-        #    "cluster_name": "us-west-2",
-        #    "facilty": "sjc1",
-        #    "plan": "t1.small.x86",
-        #    "min_nodes": 1,
-        #    "max_nodes": 5
-        #},
-        #{
-        #    "cluster_name": "us-east-1",
-        #    "facilty": "ewr1",
-        #    "plan": "t1.small.x86",
-        #    "min_nodes": 1,
-        #    "max_nodes": 5
-        #},
-        #{
-        #    "cluster_name": "eu-west-1",
-        #    "facilty": "ams1",
-        #    "plan": "t1.small.x86",
-        #    "min_nodes": 1,
-        #    "max_nodes": 5
-        #},
-        #{
-        #    "cluster_name": "ap-east-1",
-        #    "facilty": "nrt1",
-        #    "plan": "t1.small.x86",
-        #    "min_nodes": 1,
-        #    "max_nodes": 5
-        #}
+        {
+            "cluster_name": "us-west-2",
+            "facilty": "sjc1",
+            "plan": "t1.small.x86",
+            "min_nodes": 1,
+            "max_nodes": 5
+        },
+        {
+            "cluster_name": "us-east-1",
+            "facilty": "ewr1",
+            "plan": "t1.small.x86",
+            "min_nodes": 1,
+            "max_nodes": 5
+        },
+        {
+            "cluster_name": "eu-west-1",
+            "facilty": "ams1",
+            "plan": "t1.small.x86",
+            "min_nodes": 1,
+            "max_nodes": 5
+        },
+        {
+            "cluster_name": "ap-east-1",
+            "facilty": "nrt1",
+            "plan": "t1.small.x86",
+            "min_nodes": 1,
+            "max_nodes": 5
+        }
     ]
 }

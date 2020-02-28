@@ -10,6 +10,7 @@ data "template_file" "cluster_autoscaler_secret" {
         operating_system = var.operating_system
         plan = element(var.server_topology.*.plan, count.index)
         billing_cycle = var.billing_cycle
+        
     }
 }
 
@@ -36,13 +37,13 @@ data "template_file" "setup_cluster_autoscaler" {
     vars = {
         master_ip = element(packet_device.k3s_master_nodes.*.access_public_ipv4, count.index)
         api_port = 6443
-        pod_cidr = cidrsubnet(var.private_ip_cidr, 5, 31 - count.index)
-        service_cidr = cidrsubnet(var.private_ip_cidr, 5, count.index)
         k3s_version = var.k3s_version
-        cluster_name = element(var.server_topology.*.cluster_name, count.index)
-        pool_name = var.node_pool_name
-        min_nodes = element(var.server_topology.*.min_nodes, count.index)
-        max_nodes =element(var.server_topology.*.max_nodes, count.index)
+        global_ip = packet_reserved_ip_block.global_ip.address
+        global_netmask = packet_reserved_ip_block.global_ip.netmask
+        global_cidr = packet_reserved_ip_block.global_ip.cidr
+        bgp_password = random_string.bgp_password.result
+        bgp_asn = var.bgp_asn
+        auth_token = var.auth_token
     }
 }
 
