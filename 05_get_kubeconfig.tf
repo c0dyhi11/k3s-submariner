@@ -1,5 +1,7 @@
 resource "null_resource" "copy_kubeconfigs"{
-    depends_on = [null_resource.install_k3s]
+    depends_on = [
+        null_resource.install_k3s
+    ]
     count = length(var.server_topology)
     provisioner "local-exec" {
         command = <<-EOC

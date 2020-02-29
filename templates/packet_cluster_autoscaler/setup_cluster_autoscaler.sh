@@ -6,7 +6,7 @@ GLOBAL_IP='${global_ip}'
 GLOBAL_NETMASK='${global_netmask}'
 GLOBAL_CIDR='${global_cidr}'
 BGP_PASSWORD='${bgp_password}'
-BPG_ASN='${bgp_asn}'
+BGP_ASN='${bgp_asn}'
 
 TOKEN=`cat /var/lib/rancher/k3s/server/node-token`
 URL="https://$MASTER_IP:$API_PORT"
@@ -43,7 +43,7 @@ protocol device {
 }
 protocol bgp {
     export filter packet_bgp;
-    local as $BPG_ASN;
+    local as $BGP_ASN;
     neighbor __GATEWAY_IP__ as 65530;
     password "$BGP_PASSWORD"; 
 }
@@ -67,5 +67,3 @@ EOC
 )"
 USER_DATA=$(printf "$K3S_SCRIPT" | base64 -w 0)
 sed -i "s/__USER_DATA__/$USER_DATA/g" /root/autoscaler/cluster_autoscaler_secret.yaml
-
-kubectl apply -f /root/autoscaler

@@ -28,7 +28,7 @@ variable "ssh_key_path" {
 
 variable "k3s_version" {
     description = "The GitHub release version of k3s to install"
-    default = "v1.17.2+k3s1"
+    default = "v1.17.3+k3s1"
 }
 
 variable "helm_version" {

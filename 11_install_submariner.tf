@@ -1,5 +1,7 @@
 resource "null_resource" "install_submariner_broker"{
-    depends_on = [null_resource.copy_kubeconfigs]
+    depends_on = [
+        null_resource.copy_kubeconfigs
+    ]
     provisioner "local-exec" {
         command = <<-EOC
             subctl deploy-broker --kubeconfig kubeconfigs/${var.server_topology.0.cluster_name} --no-dataplane
@@ -8,7 +10,9 @@ resource "null_resource" "install_submariner_broker"{
 }
 
 resource "null_resource" "join_submariner_nodes"{
-    depends_on = [null_resource.install_submariner_broker]
+    depends_on = [
+        null_resource.install_submariner_broker
+    ]
     count = length(var.server_topology)
     provisioner "local-exec" {
         command = <<-EOC
