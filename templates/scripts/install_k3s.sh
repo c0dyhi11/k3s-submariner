@@ -34,5 +34,5 @@ echo "Gather token and install k3s on worker node via SSH"
 TOKEN=`cat /var/lib/rancher/k3s/server/node-token`
 URL="https://$MASTER_NODE_IP:6443"
 ssh root@$WORKER_NODE_IP <<-SSH
-    curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION=$k3s_ver K3S_URL=$URL K3S_TOKEN=$TOKEN sh -
+    curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION=$k3s_ver K3S_URL=$URL K3S_TOKEN=$TOKEN INSTALL_K3S_EXEC="agent --kubelet-arg cloud-provider=external" sh -
 SSH

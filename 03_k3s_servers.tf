@@ -39,9 +39,3 @@ resource "packet_device" "k3s_worker_nodes" {
         format("k8s-nodepool-%s", var.node_pool_name)
     ]
 }
-
-resource "packet_bgp_session" "bgp_session" {
-    count = length(var.server_topology)
-    device_id = element(packet_device.k3s_master_nodes.*.id, count.index)
-    address_family = "ipv4"
-}
