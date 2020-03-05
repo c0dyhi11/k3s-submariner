@@ -5,8 +5,11 @@ provider "packet" {
 resource "random_string" "bgp_password" {
     length = 18
     upper = true
+    min_upper = 1 
     lower = true
+    min_lower = 1 
     number = true
+    min_numeric = 1 
     special = false
 }
 
